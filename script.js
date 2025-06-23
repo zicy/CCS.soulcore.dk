@@ -55,9 +55,9 @@
   }
   function setTemplateText(str) {
     const esc = str
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;');
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
     const html = esc.replace(/\{[^}]+\}/g, tok =>
       `<span class="variable">${tok}</span>`
     );
@@ -114,7 +114,7 @@
     categorySel.innerHTML = '';
     Object.keys(commands).forEach(cat => {
       const opt = document.createElement('option');
-      opt.value       = cat;
+      opt.value = cat;
       opt.textContent = capitalize(cat);
       categorySel.appendChild(opt);
     });
@@ -125,7 +125,7 @@
     if (!commands[cat]) return;
     commands[cat].Groups.forEach(g => {
       const opt = document.createElement('option');
-      opt.value       = g.id;
+      opt.value = g.id;
       opt.textContent = g.name;
       groupSel.appendChild(opt);
     });
@@ -146,8 +146,8 @@
     if (!cat) return alert('Please select a category first.');
     const name = prompt('Enter new group name:');
     if (!name) return;
-    const slug = name.replace(/\W+/g,'-').toLowerCase();
-    const id   = `${cat}-${slug}`;
+    const slug = name.replace(/\W+/g, '-').toLowerCase();
+    const id = `${cat}-${slug}`;
     if (!commands[cat].Groups.find(g => g.id === id)) {
       commands[cat].Groups.push({ id, name, commands: [] });
     }
@@ -176,7 +176,7 @@
       }
       let out = tmpl;
       det.querySelectorAll('.var-input').forEach(inp => {
-        const k     = inp.placeholder;
+        const k = inp.placeholder;
         const reOpt = new RegExp(` ?\\{${k}\\?\\}`, 'g');
         const reReq = new RegExp(`\\{${k}\\}`, 'g');
         out = inp.value
@@ -203,7 +203,7 @@
     // update tab badges
     document.querySelectorAll('.tab-button').forEach(btn => {
       const tabId = btn.dataset.tab;
-      const all   = Array.from(document.querySelectorAll(
+      const all = Array.from(document.querySelectorAll(
         `#${tabId} .command-block`
       ));
       const vis = all.filter(d => d.style.display !== 'none').length;
@@ -222,7 +222,7 @@
         .every(i => i.checkValidity());
       const btn = det.querySelector('.copy-btn-inline');
       btn.disabled = !valid;
-      btn.title    = valid ? 'Copy Command' : 'Fix invalid inputs';
+      btn.title = valid ? 'Copy Command' : 'Fix invalid inputs';
       det.querySelector('.code-wrapper').style.cursor =
         valid ? 'pointer' : 'not-allowed';
     });
@@ -234,7 +234,7 @@
     tabContents.innerHTML = '';
     Object.keys(commands).forEach(tabId => {
       const btn = document.createElement('button');
-      btn.className   = 'tab-button';
+      btn.className = 'tab-button';
       btn.dataset.tab = tabId;
       btn.textContent = capitalize(tabId);
       btn.addEventListener('click', () => switchTab(tabId));
@@ -242,7 +242,7 @@
 
       const sec = document.createElement('section');
       sec.className = 'tab-content';
-      sec.id        = tabId;
+      sec.id = tabId;
       tabContents.appendChild(sec);
     });
   }
@@ -267,7 +267,7 @@
       Groups.forEach(group => {
         // Group <details>
         const grp = document.createElement('details');
-        grp.className  = 'command-group';
+        grp.className = 'command-group';
         grp.dataset.id = group.id;
         if (group.id === activeGroup) grp.open = true;
 
@@ -284,15 +284,15 @@
         // Commands
         group.commands.forEach(cmd => {
           const det = document.createElement('details');
-          det.className  = 'command-block';
+          det.className = 'command-block';
           det.dataset.id = cmd.id;
           if (cmd.id === activeCmd) det.open = true;
 
           // Summary + edit icon
           const cs = document.createElement('summary');
-          cs.style.display        = 'flex';
+          cs.style.display = 'flex';
           cs.style.justifyContent = 'space-between';
-          cs.style.alignItems     = 'center';
+          cs.style.alignItems = 'center';
 
           const lbl = document.createElement('span');
           lbl.textContent = cmd.label;
@@ -300,7 +300,7 @@
 
           const editBtn = document.createElement('button');
           editBtn.className = 'edit-btn-inline';
-          editBtn.title     = 'Edit Command';
+          editBtn.title = 'Edit Command';
           editBtn.innerText = '✏️';
           editBtn.addEventListener('click', e => {
             e.preventDefault(); e.stopPropagation();
@@ -331,14 +331,14 @@
           // Variable inputs
           Object.entries(cmd.variables || {}).forEach(([key, opt]) => {
             const hintEl = document.createElement('div');
-            hintEl.className  = 'hint';
+            hintEl.className = 'hint';
             hintEl.textContent = opt.hint;
             fs.appendChild(hintEl);
 
             const inp = document.createElement('input');
-            inp.className   = 'var-input';
+            inp.className = 'var-input';
             inp.placeholder = key;
-            inp.value       = opt.value;
+            inp.value = opt.value;
             if (opt.pattern) inp.pattern = opt.pattern;
             inp.addEventListener('input', () => {
               updateAll();
@@ -351,10 +351,10 @@
           // Code + copy
           const cw = document.createElement('div');
           cw.className = 'code-wrapper';
-          const codeEl  = document.createElement('code');
+          const codeEl = document.createElement('code');
           const copyBtn = document.createElement('button');
           copyBtn.className = 'copy-btn-inline';
-          copyBtn.title     = 'Copy Command';
+          copyBtn.title = 'Copy Command';
 
           copyBtn.addEventListener('click', e => {
             e.stopPropagation();
@@ -402,7 +402,7 @@
 
     // Category & Group selects
     populateCategoryList();
-    categorySel.value    = tabId;
+    categorySel.value = tabId;
     categorySel.onchange = populateGroupList;
     populateGroupList();
     groupSel.value = groupId || '';
@@ -410,16 +410,16 @@
     // Prefill fields
     labelInput.value = cmdId
       ? commands[tabId].Groups.find(g => g.id === groupId)
-          .commands.find(c => c.id === cmdId).label
+        .commands.find(c => c.id === cmdId).label
       : '';
     descInput.value = cmdId
       ? commands[tabId].Groups.find(g => g.id === groupId)
-          .commands.find(c => c.id === cmdId).description
+        .commands.find(c => c.id === cmdId).description
       : '';
     setTemplateText(
       cmdId
         ? commands[tabId].Groups.find(g => g.id === groupId)
-            .commands.find(c => c.id === cmdId).template
+          .commands.find(c => c.id === cmdId).template
         : ''
     );
 
@@ -427,13 +427,13 @@
     varsField.innerHTML = '<legend>Variables +</legend>';
     const legend = varsField.querySelector('legend');
     legend.style.cursor = 'pointer';
-    legend.title        = 'Add Variable';
-    legend.onclick      = () => addVariableRow();
+    legend.title = 'Add Variable';
+    legend.onclick = () => addVariableRow();
 
     if (cmdId) {
       const cmd = commands[tabId].Groups.find(g => g.id === groupId)
         .commands.find(c => c.id === cmdId);
-      Object.entries(cmd.variables || {}).forEach(([k,opt]) =>
+      Object.entries(cmd.variables || {}).forEach(([k, opt]) =>
         addVariableRow(k, opt.hint, opt.pattern || '', opt.optional)
       );
     } else {
@@ -460,9 +460,9 @@
     varsField.appendChild(row);
 
     const nameFld = row.querySelector('input[placeholder="name"]');
-    const optChk  = row.querySelector('.var-optional');
-    const insBtn  = row.querySelector('.insert-btn');
-    const delBtn  = row.querySelector('.remove-var');
+    const optChk = row.querySelector('.var-optional');
+    const insBtn = row.querySelector('.insert-btn');
+    const delBtn = row.querySelector('.remove-var');
 
     // Handle insertion at caret or append
     insBtn.addEventListener('click', e => {
@@ -499,39 +499,39 @@
     let grp = commands[cat].Groups.find(g => g.id === groupSel.value);
     if (!grp) {
       const name = prompt('Re-enter new group name:');
-      const slug = name.replace(/\W+/g,'-').toLowerCase();
+      const slug = name.replace(/\W+/g, '-').toLowerCase();
       grp = { id: `${cat}-${slug}`, name, commands: [] };
       commands[cat].Groups.push(grp);
     }
 
     const label = labelInput.value.trim();
-    const desc  = descInput.value.trim();
-    const tpl   = getTemplateText().trim();
+    const desc = descInput.value.trim();
+    const tpl = getTemplateText().trim();
 
     const vars = {};
     varsField.querySelectorAll('.variable-row').forEach(r => {
-      const nm   = r.querySelector('input[placeholder="name"]').value.trim();
+      const nm = r.querySelector('input[placeholder="name"]').value.trim();
       const optC = r.querySelector('.var-optional').checked;
-      const hi   = r.querySelector('input[placeholder="hint"]').value.trim();
-      const pt   = r.querySelector('input[placeholder="pattern"]').value.trim();
-      if (nm) vars[nm] = { value:'', hint:hi, pattern:pt, optional:optC };
+      const hi = r.querySelector('input[placeholder="hint"]').value.trim();
+      const pt = r.querySelector('input[placeholder="pattern"]').value.trim();
+      if (nm) vars[nm] = { value: '', hint: hi, pattern: pt, optional: optC };
     });
 
     if (editingCmd && editingCmd.cmdId) {
       const oldGrp = commands[editingCmd.tabId].Groups
         .find(g => g.id === editingCmd.groupId);
       const cmd = oldGrp.commands.find(c => c.id === editingCmd.cmdId);
-      cmd.label       = label;
+      cmd.label = label;
       cmd.description = desc;
-      cmd.template    = tpl;
-      cmd.variables   = vars;
+      cmd.template = tpl;
+      cmd.variables = vars;
       if (editingCmd.tabId !== cat || editingCmd.groupId !== grp.id) {
         oldGrp.commands = oldGrp.commands.filter(c => c.id !== cmd.id);
         grp.commands.push(cmd);
       }
     } else {
-      const newId = `${cat}-${grp.id}-${label.replace(/\W+/g,'')}`.toLowerCase();
-      grp.commands.push({ id:newId, label, description:desc, template:tpl, variables:vars });
+      const newId = `${cat}-${grp.id}-${label.replace(/\W+/g, '')}`.toLowerCase();
+      grp.commands.push({ id: newId, label, description: desc, template: tpl, variables: vars });
     }
 
     cleanupStructure();
@@ -544,10 +544,10 @@
 
   // ——— 16. Export JSON ————————————————————
   exportBtn.addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(commands, null, 2)], { type:'application/json' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href     = url;
+    const blob = new Blob([JSON.stringify(commands, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
     a.download = 'commands.json';
     a.click();
     URL.revokeObjectURL(url);

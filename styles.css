@@ -8,6 +8,7 @@
   margin: 0;
   padding: 0;
 }
+
 body {
   font-family: Arial, sans-serif;
   line-height: 1.5;
@@ -16,6 +17,7 @@ body {
   transition: background 0.3s, color 0.3s;
   padding: 1rem;
 }
+
 body.dark {
   background: #121212;
   color: #e0e0e0;
@@ -32,13 +34,17 @@ header {
   border-radius: 8px;
   margin-bottom: 1rem;
 }
+
 header h1 {
   font-size: 1.25rem;
 }
+
 .header-actions {
   display: flex;
-  gap: 0.25rem; /* tighter grouping */
+  gap: 0.25rem;
+  /* tighter grouping */
 }
+
 .icon-btn {
   background: none;
   border: none;
@@ -49,6 +55,7 @@ header h1 {
   padding: 0.25rem;
   transition: color 0.2s;
 }
+
 .icon-btn:hover {
   color: #007bff;
 }
@@ -63,23 +70,29 @@ header h1 {
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .btn:hover {
   background: #d5d5d5;
 }
+
 .btn.primary {
   background: #28a745;
   color: #fff;
 }
+
 .btn.primary:hover {
   background: #218838;
 }
+
 .btn.secondary {
   background: #6c757d;
   color: #fff;
 }
+
 .btn.secondary:hover {
   background: #5a6268;
 }
+
 .btn.small {
   font-size: 0.85rem;
   padding: 0.25rem 0.5rem;
@@ -89,6 +102,7 @@ header h1 {
 .search-bar {
   margin-bottom: 1rem;
 }
+
 #globalSearch {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -97,11 +111,13 @@ header h1 {
   font-size: 1rem;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
+
 #globalSearch:focus {
   border-color: #007bff;
   outline: none;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
 }
+
 body.dark #globalSearch {
   background: #2b2b2b;
   border-color: #555;
@@ -114,6 +130,7 @@ body.dark #globalSearch {
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
+
 .tab-button {
   flex: 1;
   padding: 0.75rem;
@@ -124,18 +141,22 @@ body.dark #globalSearch {
   position: relative;
   transition: background 0.3s;
 }
+
 .tab-button.active {
   background: #007bff;
   color: white;
 }
+
 body.dark .tab-button {
   background: #2b2b2b;
   color: #ccc;
 }
+
 body.dark .tab-button.active {
   background: #444;
   color: white;
 }
+
 .tab-button .tab-count {
   position: absolute;
   top: 50%;
@@ -147,6 +168,7 @@ body.dark .tab-button.active {
   border-radius: 8px;
   font-size: 0.75rem;
 }
+
 body.dark .tab-button .tab-count {
   background: #0a84ff;
 }
@@ -156,12 +178,21 @@ body.dark .tab-button .tab-count {
   display: none;
   animation: fadeIn 0.3s ease-in-out;
 }
+
 .tab-content.active {
   display: block;
 }
+
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* --------- 7. Command Groups (<details>) --------- */
@@ -172,6 +203,7 @@ body.dark .tab-button .tab-count {
   overflow: hidden;
   transition: border-color 0.3s, background-color 0.3s;
 }
+
 .command-group summary {
   display: flex;
   justify-content: space-between;
@@ -183,21 +215,26 @@ body.dark .tab-button .tab-count {
   user-select: none;
   transition: background 0.3s;
 }
+
 .command-group summary:hover {
   background: #e0e0e0;
 }
+
 body.dark .command-group summary {
   background: #2b2b2b;
   color: #ddd;
 }
-.command-group > *:not(summary) {
+
+.command-group>*:not(summary) {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease;
 }
-.command-group[open] > *:not(summary) {
+
+.command-group[open]>*:not(summary) {
   max-height: 2000px;
 }
+
 .group-count {
   background: #007bff;
   color: white;
@@ -205,6 +242,7 @@ body.dark .command-group summary {
   border-radius: 8px;
   font-size: 0.75rem;
 }
+
 body.dark .group-count {
   background: #0a84ff;
 }
@@ -214,6 +252,7 @@ body.dark .group-count {
   padding: 0.75rem 1rem;
   border-top: 1px solid #ddd;
 }
+
 .command-block summary {
   background: #ddd;
   padding: 0.5rem;
@@ -222,19 +261,23 @@ body.dark .group-count {
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .command-block summary:hover {
   background: #ccc;
 }
+
 body.dark .command-block summary {
   background: #2b2b2b;
   color: #eee;
 }
-.command-block > *:not(summary) {
+
+.command-block>*:not(summary) {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease;
 }
-.command-block[open] > *:not(summary) {
+
+.command-block[open]>*:not(summary) {
   max-height: 2000px;
 }
 
@@ -243,19 +286,23 @@ body.dark .command-block summary {
   margin: 0.5rem 0;
   font-size: 0.9rem;
 }
+
 .description code {
   background: #e0e0e0;
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
 }
+
 body.dark .description code {
   background: #444;
 }
+
 .hint {
   font-size: 0.75rem;
   color: #666;
   margin-bottom: 0.5rem;
 }
+
 body.dark .hint {
   color: #aaa;
 }
@@ -270,11 +317,13 @@ body.dark .hint {
   font-size: 0.9rem;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
+
 .var-input:focus {
   border-color: #007bff;
   outline: none;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
+
 body.dark .var-input {
   background: #2b2b2b;
   border-color: #555;
@@ -286,6 +335,7 @@ body.dark .var-input {
   position: relative;
   margin-top: 0.5rem;
 }
+
 .code-wrapper code {
   display: block;
   background: #e8e8e8;
@@ -295,10 +345,12 @@ body.dark .var-input {
   white-space: pre-wrap;
   cursor: pointer;
 }
+
 body.dark .code-wrapper code {
   background: #333;
   color: #eee;
 }
+
 .copy-btn-inline {
   position: absolute;
   top: 0.4rem;
@@ -309,17 +361,26 @@ body.dark .code-wrapper code {
   cursor: pointer;
   transition: color 0.2s;
 }
+
 .copy-btn-inline:hover {
   color: #007bff;
 }
+
 .copy-btn-inline:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
+
 @keyframes flashBG {
-  from { background-color: rgba(255, 255, 0, 0.5); }
-  to   { background-color: transparent; }
+  from {
+    background-color: rgba(255, 255, 0, 0.5);
+  }
+
+  to {
+    background-color: transparent;
+  }
 }
+
 .flash {
   animation: flashBG 0.3s ease-in-out;
 }
@@ -329,9 +390,13 @@ body.dark .code-wrapper code {
   display: none;
   position: fixed;
   z-index: 2000;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.5);
 }
+
 .modal-content {
   background: #fff;
   margin: 5% auto;
@@ -342,6 +407,7 @@ body.dark .code-wrapper code {
   position: relative;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
+
 .modal-content .close {
   position: absolute;
   top: 10px;
@@ -357,11 +423,13 @@ body.dark .code-wrapper code {
   gap: 10px 20px;
   align-items: start;
 }
+
 /* Full-width rows */
 .form-grid fieldset,
 .form-grid .editor-actions {
   grid-column: 1 / -1;
 }
+
 .editor-actions {
   text-align: right;
   margin-top: 1rem;
@@ -374,6 +442,7 @@ body.dark .code-wrapper code {
   padding: 1rem;
   margin-bottom: 1rem;
 }
+
 #variablesFieldset legend {
   padding: 0 0.5rem;
   font-weight: bold;
@@ -400,14 +469,17 @@ body.dark .code-wrapper code {
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
+
 .template-editor:focus {
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
+
 .template-editor[contenteditable]:empty:before {
   content: attr(data-placeholder);
   color: #888;
 }
+
 .template-editor .variable {
   background: rgba(0, 123, 255, 0.2);
   border-radius: 3px;
@@ -419,9 +491,11 @@ body.dark .code-wrapper code {
   display: flex;
   align-items: center;
 }
+
 .combo-group select {
   flex: 1;
 }
+
 .combo-group .icon-btn {
   margin-left: 0.25rem;
 }
@@ -436,6 +510,7 @@ body.dark .code-wrapper code {
   cursor: pointer;
   color: inherit;
 }
+
 .edit-btn-inline:hover {
   color: #007bff;
 }
@@ -449,10 +524,12 @@ body.dark .code-wrapper code {
   transition: border-color 0.3s, background-color 0.3s;
   background: #fafafa;
 }
+
 body.dark .command-fieldset {
   background: #1e1e1e;
   border-color: #444;
 }
+
 .command-fieldset legend {
   padding: 0 0.5rem;
   font-weight: bold;
@@ -469,6 +546,7 @@ body.dark .command-fieldset {
   position: relative;
   z-index: 1;
 }
+
 /* Bottom half border on the fieldset */
 .command-block[open] .command-fieldset {
   border: 1px solid #ccc;
@@ -477,11 +555,13 @@ body.dark .command-fieldset {
   margin-top: -1px;
   background: #fafafa;
 }
+
 /* Dark-mode adjustments */
 body.dark .command-block[open] summary {
   border-color: #444;
   background: #2b2b2b;
 }
+
 body.dark .command-block[open] .command-fieldset {
   border-color: #444;
   background: #1e1e1e;
