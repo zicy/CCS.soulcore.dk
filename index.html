@@ -1,0 +1,110 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Command Cheat Sheet</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>Command Cheat Sheet</h1>
+    <div class="header-actions">
+      <button id="openEditor" class="icon-btn" title="Add Command">➕</button>
+      <button id="exportJson" class="icon-btn" title="Export JSON">📥</button>
+      <button id="darkToggle" class="icon-btn" title="Toggle Dark Mode">🌓</button>
+    </div>
+  </header>
+
+  <!-- ===== GLOBAL SEARCH ===== -->
+  <div class="search-bar">
+    <input
+      type="text"
+      id="globalSearch"
+      placeholder="Search commands…"
+    />
+  </div>
+
+  <!-- ===== TABS ===== -->
+  <div class="tab-bar"></div>
+  <div class="tab-contents"></div>
+
+  <!-- ===== EDITOR MODAL ===== -->
+  <div id="editorModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <h2 id="editorTitle">Add Command</h2>
+      <form id="editorForm" class="form-grid">
+        <div class="section-header">Command Details</div>
+
+        <!-- Name -->
+        <label for="editorLabel">Name:</label>
+        <input type="text" id="editorLabel" class="var-input" required />
+
+        <!-- Category (moved above Description) -->
+        <label for="editorCategory">Category:</label>
+        <div class="combo-group">
+          <select id="editorCategory" class="var-input"></select>
+          <button
+            type="button"
+            id="addCategoryBtn"
+            class="icon-btn small"
+            title="Add Category"
+          >➕</button>
+        </div>
+
+        <!-- Group (moved above Description) -->
+        <label for="editorGroup">Group:</label>
+        <div class="combo-group">
+          <select id="editorGroup" class="var-input"></select>
+          <button
+            type="button"
+            id="addGroupBtn"
+            class="icon-btn small"
+            title="Add Group"
+          >➕</button>
+        </div>
+
+        <!-- Description -->
+        <label for="editorDescription">Description:</label>
+        <textarea
+          id="editorDescription"
+          class="var-input"
+          rows="2"
+        ></textarea>
+
+        <!-- Template editor -->
+        <label for="editorTemplate">Template:</label>
+        <div class="template-wrapper">
+          <div
+            id="editorTemplate"
+            class="template-editor var-input"
+            contenteditable="true"
+            data-placeholder="e.g. /ban {username} {reason?}"
+          ></div>
+          <small class="template-hint">
+            Click ⇨ beside a variable to insert its placeholder
+          </small>
+        </div>
+
+        <!-- Variables -->
+        <fieldset id="variablesFieldset">
+          <legend>Variables +</legend>
+        </fieldset>
+
+        <!-- Save & Cancel -->
+        <div class="editor-actions">
+          <button type="submit" class="btn primary">Save</button>
+          <button type="button" id="cancelEditor" class="btn secondary">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

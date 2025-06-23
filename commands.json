@@ -1,0 +1,102 @@
+{
+  "admin": {
+    "Groups": [
+      {
+        "id": "admin-user-management",
+        "name": "User Management",
+        "commands": [
+          {
+            "id": "admin-user-management-ban",
+            "label": "/ban",
+            "template": "/ban {username} {reason?}",
+            "description": "Bans a user permanently or with an optional reason.",
+            "variables": {
+              "username": {
+                "value": "user1",
+                "hint": "Alphanumeric username",
+                "pattern": "^[a-zA-Z0-9_]{3,16}$"
+              },
+              "reason": {
+                "value": "spamming",
+                "hint": "Optional ban reason",
+                "pattern": ".*"
+              }
+            }
+          },
+          {
+            "id": "admin-user-management-kick",
+            "label": "/kick",
+            "template": "/kick {username}",
+            "description": "Kicks a user from the server.",
+            "variables": {
+              "username": {
+                "value": "user2",
+                "hint": "Alphanumeric username",
+                "pattern": "^[a-zA-Z0-9_]{3,16}$"
+              }
+            }
+          },
+          {
+            "id": "admin-admin-user-management-testing",
+            "label": "testing",
+            "template": "/test {hmhhmmh}",
+            "description": "more testing !!!",
+            "variables": {
+              "hmhhmmh": {
+                "value": "",
+                "hint": "yeees",
+                "pattern": ""
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "maintenance": {
+    "Groups": [
+      {
+        "id": "maintenance-backups",
+        "name": "Backups",
+        "commands": [
+          {
+            "id": "maintenance-backups-restore",
+            "label": "/restore",
+            "template": "/restore {date}",
+            "description": "Restores data from a backup on a specific date.",
+            "variables": {
+              "date": {
+                "value": "2025-01-01",
+                "hint": "Date in YYYY-MM-DD",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "fun": {
+    "Groups": [
+      {
+        "id": "fun-games",
+        "name": "Games",
+        "commands": [
+          {
+            "id": "fun-games-roll",
+            "label": "/roll",
+            "template": "/roll {sides}",
+            "description": "Rolls a dice with a specified number of sides.",
+            "variables": {
+              "sides": {
+                "value": "6",
+                "hint": "Number of sides (2-100)",
+                "pattern": "^[2-9][0-9]?$|^100$"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
