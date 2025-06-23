@@ -162,23 +162,36 @@
     setTimeout(() => elem.classList.remove('flash'), 300);
   }
 
-  /* From v1 script.js */
-  function updateCopyButtons() {
-    document.querySelectorAll('.command-block').forEach(det => {
+  function updateCopyButtons(root = document) {
+    // if root itself is a .command-block, just wrap it in an array:
+    const commandBlocks = root.matches && root.matches('.command-block')
+      ? [root]
+      : root.querySelectorAll('.command-block');
+
+    commandBlocks.forEach(det => {
+      //console.log("updateCopyButtons | forEach commandBlocks");
       const inps = [...det.querySelectorAll('.var-input')];
       const valid = inps.every(i => i.checkValidity());
       const btn = det.querySelector('.copy-btn-inline');
+      const codeEl = det.querySelector('.code-wrapper code');
+
       btn.disabled = !valid;
       btn.style.cursor = valid ? 'pointer' : 'not-allowed';
-      const codeEl = det.querySelector('.code-wrapper code');
       codeEl.style.cursor = valid ? 'pointer' : 'not-allowed';
     });
   }
 
   // ——— 10. Update code blocks, badges & copy state —
-  function updateAll() {
+  function updateAll(root = document) {
+    
+    // if root itself is a .command-block, just wrap it in an array:
+    const commandBlocks = root.matches && root.matches('.command-block')
+      ? [root]
+      : root.querySelectorAll('.command-block');
+
     // rebuild code text
-    document.querySelectorAll('.command-block').forEach(det => {
+    commandBlocks.forEach(det => {
+      //console.log("updateAll | forEach command-block");
       let tmpl;
       const id = det.dataset.id;
       for (const { Groups } of Object.values(commands)) {
@@ -357,8 +370,11 @@
 
             if (opt.pattern) inp.pattern = opt.pattern;
             inp.addEventListener('input', () => {
-              updateAll();
-              updateCopyButtons()
+              // Find my .command-block so that we do not need to check all in the DOM
+              const myCommandBlock = inp.closest('.command-block');
+
+              updateAll(myCommandBlock);
+              updateCopyButtons(myCommandBlock)
               inp.title = inp.checkValidity() ? '' : inp.validationMessage;
             });
             inp.title = inp.checkValidity() ? '' : inp.validationMessage;
