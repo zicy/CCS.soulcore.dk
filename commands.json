@@ -96,6 +96,34 @@
             }
           }
         ]
+      },
+      {
+        "id": "fun-misc",
+        "name": "Misc",
+        "commands": [
+          {
+            "id": "fun-fun-misc-scalevillagerinminecart",
+            "label": "Scale villager in minecart",
+            "description": "",
+            "template": "/execute at @e[type=minecraft:minecart,distance={distance}] run execute if entity @e[type=minecraft:villager,distance=..0.5] as @e[type=minecraft:villager,distance=..0.5] run attribute @s minecraft:scale base set {scale}",
+            "variables": {
+              "distance": {
+                "value": "",
+                "hint": "Distance to search",
+                "default_val": "10",
+                "pattern": "",
+                "optional": false
+              },
+              "scale": {
+                "value": "",
+                "hint": "The scale",
+                "default_val": "1.0",
+                "pattern": "",
+                "optional": false
+              }
+            }
+          }
+        ]
       }
     ]
   }
