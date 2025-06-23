@@ -186,7 +186,7 @@
   // ——— 10. Update code blocks, badges & copy state —
   function updateAll(root = document) {
     //console.trace('Called from');
-    
+
     // if root itself is a .command-block, just wrap it in an array:
     const commandBlocks = root.matches && root.matches('.command-block')
       ? [root]
@@ -499,7 +499,17 @@
       const placeholder = `{${variableName}${optChk.checked ? '?' : ''}}`;
       if (document.activeElement === editorTemplateInputElement) {
         const offset = saveCaretPosition(editorTemplateInputElement);
-        document.execCommand('insertText', false, placeholder);
+        const sel = window.getSelection();
+        if (sel.rangeCount) {
+          const range = sel.getRangeAt(0);
+          range.deleteContents();
+          range.insertNode(document.createTextNode(placeholder));
+          // Move caret after inserted text
+          range.setStartAfter(range.endContainer);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
         setTemplateText(getTemplateText());
         restoreCaretPosition(editorTemplateInputElement, offset + placeholder.length);
       } else {
