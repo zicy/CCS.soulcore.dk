@@ -2,40 +2,40 @@
 (() => {
   // ——— 1. LocalStorage keys ——————————————————
   const LS = {
-    TAB:   'activeTab',      // last open tab
+    TAB: 'activeTab',      // last open tab
     GROUP: 'activeGroup',    // last open group
-    CMD:   'activeCommand',  // last open command
+    CMD: 'activeCommand',  // last open command
     THEME: 'darkMode'        // dark/light mode
   };
 
   // ——— 2. Cached DOM nodes ——————————————————
-  const tabBar         = document.querySelector('.tab-bar');
-  const tabContents    = document.querySelector('.tab-contents');
-  const searchInput    = document.getElementById('globalSearch');
-  const darkToggle     = document.getElementById('darkToggle');
-  const openEditor     = document.getElementById('openEditor');
-  const exportBtn      = document.getElementById('exportJson');
-  const modal          = document.getElementById('editorModal');
-  const closeModal     = document.getElementById('closeModal');
-  const cancelBtn      = document.getElementById('cancelEditor');
-  const titleEl        = document.getElementById('editorTitle');
-  const categorySel    = document.getElementById('editorCategory');
+  const tabBar = document.querySelector('.tab-bar');
+  const tabContents = document.querySelector('.tab-contents');
+  const searchInput = document.getElementById('globalSearch');
+  const darkToggle = document.getElementById('darkToggle');
+  const openEditor = document.getElementById('openEditor');
+  const exportBtn = document.getElementById('exportJson');
+  const modal = document.getElementById('editorModal');
+  const closeModal = document.getElementById('closeModal');
+  const cancelBtn = document.getElementById('cancelEditor');
+  const titleEl = document.getElementById('editorTitle');
+  const categorySel = document.getElementById('editorCategory');
   const addCategoryBtn = document.getElementById('addCategoryBtn');
-  const groupSel       = document.getElementById('editorGroup');
-  const addGroupBtn    = document.getElementById('addGroupBtn');
-  const labelInput     = document.getElementById('editorLabel');
-  const descInput      = document.getElementById('editorDescription');
-  const tplInput       = document.getElementById('editorTemplate');
-  const varsField      = document.getElementById('variablesFieldset');
-  const form           = document.getElementById('editorForm');
+  const groupSel = document.getElementById('editorGroup');
+  const addGroupBtn = document.getElementById('addGroupBtn');
+  const labelInput = document.getElementById('editorLabel');
+  const descInput = document.getElementById('editorDescription');
+  const templateInput = document.getElementById('editorTemplate');
+  const varsField = document.getElementById('variablesFieldset');
+  const form = document.getElementById('editorForm');
 
   // ——— 3. Application state ——————————————————
-  let commands    = {};                                 // loaded JSON data
-  let activeTab   = localStorage.getItem(LS.TAB)   || 'admin';
+  let commands = {};                                 // loaded JSON data
+  let activeTab = localStorage.getItem(LS.TAB) || 'admin';
   let activeGroup = localStorage.getItem(LS.GROUP) || null;
-  let activeCmd   = localStorage.getItem(LS.CMD)   || null;
-  let darkMode    = localStorage.getItem(LS.THEME) === 'true';
-  let editingCmd  = null;                              // { tabId, groupId, cmdId }
+  let activeCmd = localStorage.getItem(LS.CMD) || null;
+  let darkMode = localStorage.getItem(LS.THEME) === 'true';
+  let editingCmd = null;                              // { tabId, groupId, commandId }
 
   const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -51,7 +51,7 @@
 
   // ——— 5. Template editor helpers ——————————
   function getTemplateText() {
-    return tplInput.textContent;
+    return templateInput.textContent;
   }
   function setTemplateText(str) {
     const esc = str
@@ -61,7 +61,7 @@
     const html = esc.replace(/\{[^}]+\}/g, tok =>
       `<span class="variable">${tok}</span>`
     );
-    tplInput.innerHTML = html;
+    templateInput.innerHTML = html;
   }
   function saveCaretPosition(context) {
     const sel = window.getSelection();
@@ -95,10 +95,10 @@
     sel.removeAllRanges();
     sel.addRange(range);
   }
-  tplInput.addEventListener('input', () => {
-    const pos = saveCaretPosition(tplInput);
+  templateInput.addEventListener('input', () => {
+    const pos = saveCaretPosition(templateInput);
     setTemplateText(getTemplateText());
-    restoreCaretPosition(tplInput, pos);
+    restoreCaretPosition(templateInput, pos);
   });
 
   // ——— 6. Cleanup empty groups/categories —————
@@ -160,6 +160,19 @@
     navigator.clipboard.writeText(text);
     elem.classList.add('flash');
     setTimeout(() => elem.classList.remove('flash'), 300);
+  }
+
+  /* From v1 script.js */
+  function updateCopyButtons() {
+    document.querySelectorAll('.command-block').forEach(det => {
+      const inps = [...det.querySelectorAll('.var-input')];
+      const valid = inps.every(i => i.checkValidity());
+      const btn = det.querySelector('.copy-btn-inline');
+      btn.disabled = !valid;
+      btn.style.cursor = valid ? 'pointer' : 'not-allowed';
+      const codeEl = det.querySelector('.code-wrapper code');
+      codeEl.style.cursor = valid ? 'pointer' : 'not-allowed';
+    });
   }
 
   // ——— 10. Update code blocks, badges & copy state —
@@ -317,15 +330,15 @@
           det.appendChild(cs);
 
           // Fieldset for opened content (no <legend>)
-          const fs = document.createElement('fieldset');
-          fs.className = 'command-fieldset';
+          const fieldset_dom = document.createElement('fieldset');
+          fieldset_dom.className = 'command-fieldset';
 
           // Description
           if (cmd.description) {
             const md = document.createElement('div');
             md.className = 'description';
             md.innerHTML = cmd.description.replace(/`([^`]+)`/g, '<code>$1</code>');
-            fs.appendChild(md);
+            fieldset_dom.appendChild(md);
           }
 
           // Variable inputs
@@ -333,47 +346,51 @@
             const hintEl = document.createElement('div');
             hintEl.className = 'hint';
             hintEl.textContent = opt.hint;
-            fs.appendChild(hintEl);
+            fieldset_dom.appendChild(hintEl);
 
             const inp = document.createElement('input');
             inp.className = 'var-input';
             inp.placeholder = key;
-            inp.value = opt.value;
+
+            if (opt.value) inp.value = opt.value;
+            if (opt.default_value && opt.default_value.trim() != '') inp.value = opt.default_value;
+
             if (opt.pattern) inp.pattern = opt.pattern;
             inp.addEventListener('input', () => {
               updateAll();
+              updateCopyButtons()
               inp.title = inp.checkValidity() ? '' : inp.validationMessage;
             });
             inp.title = inp.checkValidity() ? '' : inp.validationMessage;
-            fs.appendChild(inp);
+            fieldset_dom.appendChild(inp);
           });
 
           // Code + copy
-          const cw = document.createElement('div');
-          cw.className = 'code-wrapper';
+          const commandBlock = document.createElement('div');
+          commandBlock.className = 'code-wrapper';
           const codeEl = document.createElement('code');
-          const copyBtn = document.createElement('button');
-          copyBtn.className = 'copy-btn-inline';
-          copyBtn.title = 'Copy Command';
+          const copyButton = document.createElement('button');
+          copyButton.className = 'copy-btn-inline';
+          copyButton.title = 'Copy Command';
 
-          copyBtn.addEventListener('click', e => {
+          copyButton.addEventListener('click', e => {
             e.stopPropagation();
             if ([...det.querySelectorAll('.var-input')].every(i => i.checkValidity())) {
-              copyAndFlash(cw, codeEl.textContent);
+              copyAndFlash(commandBlock, codeEl.textContent);
             }
           });
-          cw.addEventListener('click', () => {
+          commandBlock.addEventListener('click', () => {
             if ([...det.querySelectorAll('.var-input')].every(i => i.checkValidity())) {
-              copyAndFlash(cw, codeEl.textContent);
+              copyAndFlash(commandBlock, codeEl.textContent);
             }
           });
 
-          cw.appendChild(codeEl);
-          cw.appendChild(copyBtn);
-          fs.appendChild(cw);
+          commandBlock.appendChild(codeEl);
+          commandBlock.appendChild(copyButton);
+          fieldset_dom.appendChild(commandBlock);
 
           // Append and integrate
-          det.appendChild(fs);
+          det.appendChild(fieldset_dom);
           grp.appendChild(det);
         });
 
@@ -396,9 +413,9 @@
   closeModal.addEventListener('click', () => modal.style.display = 'none');
   cancelBtn.addEventListener('click', () => modal.style.display = 'none');
 
-  function openEditModal(tabId, groupId, cmdId = null) {
-    editingCmd = { tabId, groupId, cmdId };
-    titleEl.textContent = cmdId ? 'Edit Command' : 'Add Command';
+  function openEditModal(tabId, groupId, commandId = null) {
+    editingCmd = { tabId, groupId, commandId };
+    titleEl.textContent = commandId ? 'Edit Command' : 'Add Command';
 
     // Category & Group selects
     populateCategoryList();
@@ -408,18 +425,18 @@
     groupSel.value = groupId || '';
 
     // Prefill fields
-    labelInput.value = cmdId
+    labelInput.value = commandId
       ? commands[tabId].Groups.find(g => g.id === groupId)
-        .commands.find(c => c.id === cmdId).label
+        .commands.find(c => c.id === commandId).label
       : '';
-    descInput.value = cmdId
+    descInput.value = commandId
       ? commands[tabId].Groups.find(g => g.id === groupId)
-        .commands.find(c => c.id === cmdId).description
+        .commands.find(c => c.id === commandId).description
       : '';
     setTemplateText(
-      cmdId
+      commandId
         ? commands[tabId].Groups.find(g => g.id === groupId)
-          .commands.find(c => c.id === cmdId).template
+          .commands.find(c => c.id === commandId).template
         : ''
     );
 
@@ -430,11 +447,10 @@
     legend.title = 'Add Variable';
     legend.onclick = () => addVariableRow();
 
-    if (cmdId) {
-      const cmd = commands[tabId].Groups.find(g => g.id === groupId)
-        .commands.find(c => c.id === cmdId);
+    if (commandId) {
+      const cmd = commands[tabId].Groups.find(g => g.id === groupId).commands.find(c => c.id === commandId);
       Object.entries(cmd.variables || {}).forEach(([k, opt]) =>
-        addVariableRow(k, opt.hint, opt.pattern || '', opt.optional)
+        addVariableRow(k, opt.hint, opt.pattern || '', opt.default_value || '', opt.optional)
       );
     } else {
       form.reset();
@@ -444,7 +460,7 @@
   }
 
   // ——— 14. Add variable row ——————————————————
-  function addVariableRow(name = '', hint = '', pattern = '', optional = false) {
+  function addVariableRow(name = '', hint = '', pattern = '', defaultValue = '', optional = false) {
     const row = document.createElement('div');
     row.className = 'variable-row';
     row.innerHTML = `
@@ -454,6 +470,7 @@
       </label>
       <input class="var-input" placeholder="hint" value="${hint}">
       <input class="var-input" placeholder="pattern" value="${pattern}">
+      <input class="var-input" placeholder="Default value" value="${defaultValue}">
       <button type="button" class="insert-btn">⇨</button>
       <button type="button" class="remove-var">🗑️</button>
     `;
@@ -467,14 +484,14 @@
     // Handle insertion at caret or append
     insBtn.addEventListener('click', e => {
       e.preventDefault(); e.stopPropagation();
-      const nm = nameFld.value.trim();
-      if (!nm) return;
-      const placeholder = `{${nm}${optChk.checked ? '?' : ''}}`;
-      if (document.activeElement === tplInput) {
-        const offset = saveCaretPosition(tplInput);
+      const variableName = nameFld.value.trim();
+      if (!variableName) return;
+      const placeholder = `{${variableName}${optChk.checked ? '?' : ''}}`;
+      if (document.activeElement === templateInput) {
+        const offset = saveCaretPosition(templateInput);
         document.execCommand('insertText', false, placeholder);
         setTemplateText(getTemplateText());
-        restoreCaretPosition(tplInput, offset + placeholder.length);
+        restoreCaretPosition(templateInput, offset + placeholder.length);
       } else {
         const curr = getTemplateText();
         setTemplateText((curr + ' ' + placeholder).trim());
@@ -483,8 +500,8 @@
 
     // Handle delete
     delBtn.addEventListener('click', () => {
-      const nm = nameFld.value.trim();
-      const re = new RegExp(` ?\\{${nm}\\??\\}`, 'g');
+      const variableName = nameFld.value.trim();
+      const re = new RegExp(` ?\\{${variableName}\\??\\}`, 'g');
       setTemplateText(getTemplateText().replace(re, '').trim());
       row.remove();
     });
@@ -510,17 +527,18 @@
 
     const vars = {};
     varsField.querySelectorAll('.variable-row').forEach(r => {
-      const nm = r.querySelector('input[placeholder="name"]').value.trim();
-      const optC = r.querySelector('.var-optional').checked;
-      const hi = r.querySelector('input[placeholder="hint"]').value.trim();
-      const pt = r.querySelector('input[placeholder="pattern"]').value.trim();
-      if (nm) vars[nm] = { value: '', hint: hi, pattern: pt, optional: optC };
+      const name = r.querySelector('input[placeholder="name"]').value.trim();
+      const optional = r.querySelector('.var-optional').checked;
+      const hint = r.querySelector('input[placeholder="hint"]').value.trim();
+      const pattern = r.querySelector('input[placeholder="pattern"]').value.trim();
+      const defaultValue = r.querySelector('input[placeholder="Default value"]').value.trim();
+      if (name) vars[name] = { value: '', hint: hint, pattern: pattern, default_value: defaultValue, optional: optional };
     });
 
-    if (editingCmd && editingCmd.cmdId) {
+    if (editingCmd && editingCmd.commandId) {
       const oldGrp = commands[editingCmd.tabId].Groups
         .find(g => g.id === editingCmd.groupId);
-      const cmd = oldGrp.commands.find(c => c.id === editingCmd.cmdId);
+      const cmd = oldGrp.commands.find(c => c.id === editingCmd.commandId);
       cmd.label = label;
       cmd.description = desc;
       cmd.template = tpl;
