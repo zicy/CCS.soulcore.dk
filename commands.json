@@ -117,8 +117,30 @@
               "scale": {
                 "value": "",
                 "hint": "The scale",
-                "pattern": "^(1[0-6]|[0-9])\\.([0-9]|[1-9]\\d?)$",
+                "pattern": "^(1[0-6]|[0-9])\\.([0-9]\\d?)$",
                 "default_value": "1.0",
+                "optional": false
+              }
+            }
+          },
+          {
+            "id": "fun-fun-misc-scaleplayer",
+            "label": "Scale player",
+            "description": "Scale a player",
+            "template": "/attribute {player} minecraft:scale base set {scale}",
+            "variables": {
+              "scale": {
+                "value": "",
+                "hint": "The scale",
+                "pattern": "^(1[0-6]|[0-9])\\.([0-9]\\d?)$",
+                "default_value": "1.0",
+                "optional": false
+              },
+              "player": {
+                "value": "",
+                "hint": "Player name",
+                "pattern": "(?!^$)",
+                "default_value": "",
                 "optional": false
               }
             }
