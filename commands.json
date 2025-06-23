@@ -104,21 +104,21 @@
           {
             "id": "fun-fun-misc-scalevillagerinminecart",
             "label": "Scale villager in minecart",
-            "description": "",
-            "template": "/execute at @e[type=minecraft:minecart,distance={distance}] run execute if entity @e[type=minecraft:villager,distance=..0.5] as @e[type=minecraft:villager,distance=..0.5] run attribute @s minecraft:scale base set {scale}",
+            "description": "Scale villagers which riding in a minecart",
+            "template": "/execute at @e[type=minecraft:minecart,distance=..{distance}] run execute if entity @e[type=minecraft:villager,distance=..0.5] as @e[type=minecraft:villager,distance=..0.5] run attribute @s minecraft:scale base set {scale}",
             "variables": {
               "distance": {
                 "value": "",
                 "hint": "Distance to search",
-                "default_val": "10",
                 "pattern": "",
+                "default_value": "10",
                 "optional": false
               },
               "scale": {
                 "value": "",
                 "hint": "The scale",
-                "default_val": "1.0",
-                "pattern": "",
+                "pattern": "^(1[0-6]|[0-9])\\.([0-9]|[1-9]\\d?)$",
+                "default_value": "1.0",
                 "optional": false
               }
             }
