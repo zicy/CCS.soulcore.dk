@@ -19,9 +19,9 @@
   const closeModal = document.getElementById('closeModal');
   const cancelBtn = document.getElementById('cancelEditor');
   const titleEl = document.getElementById('editorTitle');
-  const categorySel = document.getElementById('editorCategory');
+  const categorySelectDOM = document.getElementById('editorCategory');
   const addCategoryBtn = document.getElementById('addCategoryBtn');
-  const groupSel = document.getElementById('editorGroup');
+  const groupSelectDOM = document.getElementById('editorGroup');
   const addGroupBtn = document.getElementById('addGroupBtn');
   const labelInput = document.getElementById('editorLabel');
   const descInput = document.getElementById('editorDescription');
@@ -111,23 +111,23 @@
 
   // ——— 7. Populate Category & Group selects ————
   function populateCategoryList() {
-    categorySel.innerHTML = '';
-    Object.keys(commands).forEach(cat => {
+    categorySelectDOM.innerHTML = '';
+    Object.keys(commands).forEach(category => {
       const opt = document.createElement('option');
-      opt.value = cat;
-      opt.textContent = capitalize(cat);
-      categorySel.appendChild(opt);
+      opt.value = category;
+      opt.textContent = capitalize(category);
+      categorySelectDOM.appendChild(opt);
     });
   }
   function populateGroupList() {
-    groupSel.innerHTML = '';
-    const cat = categorySel.value;
+    groupSelectDOM.innerHTML = '';
+    const cat = categorySelectDOM.value;
     if (!commands[cat]) return;
     commands[cat].Groups.forEach(g => {
       const opt = document.createElement('option');
       opt.value = g.id;
       opt.textContent = g.name;
-      groupSel.appendChild(opt);
+      groupSelectDOM.appendChild(opt);
     });
   }
 
@@ -136,13 +136,13 @@
     const name = prompt('Enter new category name:');
     if (!name) return;
     if (!commands[name]) commands[name] = { Groups: [] };
-    renderCommands();
+    //renderCommands();   // Not needed ?
     populateCategoryList();
-    categorySel.value = name;
-    groupSel.innerHTML = '';
+    categorySelectDOM.value = name;
+    groupSelectDOM.innerHTML = '';
   });
   addGroupBtn.addEventListener('click', () => {
-    const cat = categorySel.value;
+    const cat = categorySelectDOM.value;
     if (!cat) return alert('Please select a category first.');
     const name = prompt('Enter new group name:');
     if (!name) return;
@@ -152,7 +152,7 @@
       commands[cat].Groups.push({ id, name, commands: [] });
     }
     populateGroupList();
-    groupSel.value = id;
+    groupSelectDOM.value = id;
   });
 
   // ——— 9. Copy + flash effect ——————————————
@@ -163,6 +163,8 @@
   }
 
   function updateCopyButtons(root = document) {
+    //console.trace('Called from');
+
     // if root itself is a .command-block, just wrap it in an array:
     const commandBlocks = root.matches && root.matches('.command-block')
       ? [root]
@@ -183,6 +185,7 @@
 
   // ——— 10. Update code blocks, badges & copy state —
   function updateAll(root = document) {
+    //console.trace('Called from');
     
     // if root itself is a .command-block, just wrap it in an array:
     const commandBlocks = root.matches && root.matches('.command-block')
@@ -191,7 +194,7 @@
 
     // rebuild code text
     commandBlocks.forEach(det => {
-      //console.log("updateAll | forEach command-block");
+      //console.log("updateAll | forEach command-block - rebuild code text");
       let tmpl;
       const id = det.dataset.id;
       for (const { Groups } of Object.values(commands)) {
@@ -215,6 +218,7 @@
     // filter groups & update counts
     const term = searchInput.value.trim().toLowerCase();
     document.querySelectorAll('.command-group').forEach(grp => {
+      //console.log("updateAll | forEach command-block - filter groups & update counts");
       const blocks = Array.from(grp.querySelectorAll('.command-block'));
       let match = 0;
       blocks.forEach(det => {
@@ -228,6 +232,7 @@
 
     // update tab badges
     document.querySelectorAll('.tab-button').forEach(btn => {
+      //console.log("updateAll | forEach command-block - update tab badges");
       const tabId = btn.dataset.tab;
       const all = Array.from(document.querySelectorAll(
         `#${tabId} .command-block`
@@ -240,17 +245,6 @@
         btn.appendChild(badge);
       }
       badge.textContent = term ? vis : all.length;
-    });
-
-    // disable invalid copy
-    document.querySelectorAll('.command-block').forEach(det => {
-      const valid = Array.from(det.querySelectorAll('.var-input'))
-        .every(i => i.checkValidity());
-      const btn = det.querySelector('.copy-btn-inline');
-      btn.disabled = !valid;
-      btn.title = valid ? 'Copy Command' : 'Fix invalid inputs';
-      det.querySelector('.code-wrapper').style.cursor =
-        valid ? 'pointer' : 'not-allowed';
     });
   }
 
@@ -435,10 +429,10 @@
 
     // Category & Group selects
     populateCategoryList();
-    categorySel.value = tabId;
-    categorySel.onchange = populateGroupList;
+    categorySelectDOM.value = tabId;
+    categorySelectDOM.onchange = populateGroupList;
     populateGroupList();
-    groupSel.value = groupId || '';
+    groupSelectDOM.value = groupId || '';
 
     // Prefill fields
     labelInput.value = commandId
@@ -526,15 +520,15 @@
   // ——— 15. Save (Add/Edit) command ——————————
   form.addEventListener('submit', e => {
     e.preventDefault();
-    const cat = categorySel.value.trim();
+    const cat = categorySelectDOM.value.trim();
     if (!commands[cat]) commands[cat] = { Groups: [] };
 
-    let grp = commands[cat].Groups.find(g => g.id === groupSel.value);
-    if (!grp) {
-      const name = prompt('Re-enter new group name:');
+    let commandGroup = commands[cat].Groups.find(g => g.id === groupSelectDOM.value);
+    if (!commandGroup) {
+      const name = prompt('Enter new group name:');
       const slug = name.replace(/\W+/g, '-').toLowerCase();
-      grp = { id: `${cat}-${slug}`, name, commands: [] };
-      commands[cat].Groups.push(grp);
+      commandGroup = { id: `${cat}-${slug}`, name, commands: [] };
+      commands[cat].Groups.push(commandGroup);
     }
 
     const label = labelInput.value.trim();
@@ -559,19 +553,17 @@
       cmd.description = desc;
       cmd.template = tpl;
       cmd.variables = vars;
-      if (editingCmd.tabId !== cat || editingCmd.groupId !== grp.id) {
+      if (editingCmd.tabId !== cat || editingCmd.groupId !== commandGroup.id) {
         oldGrp.commands = oldGrp.commands.filter(c => c.id !== cmd.id);
-        grp.commands.push(cmd);
+        commandGroup.commands.push(cmd);
       }
     } else {
-      const newId = `${cat}-${grp.id}-${label.replace(/\W+/g, '')}`.toLowerCase();
-      grp.commands.push({ id: newId, label, description: desc, template: tpl, variables: vars });
+      const newId = `${cat}-${commandGroup.id}-${label.replace(/\W+/g, '')}`.toLowerCase();
+      commandGroup.commands.push({ id: newId, label, description: desc, template: tpl, variables: vars });
     }
 
     cleanupStructure();
     renderCommands();
-    applyTheme();
-    updateAll();
     modal.style.display = 'none';
     editingCmd = null;
   });
@@ -596,8 +588,6 @@
     .then(data => {
       commands = data;
       renderCommands();
-      applyTheme();
-      updateAll();
     });
 
 })();
