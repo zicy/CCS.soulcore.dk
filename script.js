@@ -11,23 +11,23 @@
   // ——— 2. Cached DOM nodes ——————————————————
   const tabBar = document.querySelector('.tab-bar');
   const tabContents = document.querySelector('.tab-contents');
-  const searchInput = document.getElementById('globalSearch');
-  const darkToggle = document.getElementById('darkToggle');
-  const openEditor = document.getElementById('openEditor');
-  const exportBtn = document.getElementById('exportJson');
-  const modal = document.getElementById('editorModal');
-  const closeModal = document.getElementById('closeModal');
-  const cancelBtn = document.getElementById('cancelEditor');
-  const titleEl = document.getElementById('editorTitle');
-  const categorySelectDOM = document.getElementById('editorCategory');
-  const addCategoryBtn = document.getElementById('addCategoryBtn');
-  const groupSelectDOM = document.getElementById('editorGroup');
-  const addGroupBtn = document.getElementById('addGroupBtn');
-  const labelInput = document.getElementById('editorLabel');
-  const descInput = document.getElementById('editorDescription');
-  const templateInput = document.getElementById('editorTemplate');
-  const varsField = document.getElementById('variablesFieldset');
-  const form = document.getElementById('editorForm');
+  const searchInputElement = document.getElementById('globalSearch');
+  const darkmodeToggleElement = document.getElementById('darkToggle');
+  const commandOpenEditorElement = document.getElementById('openEditor');
+  const exportButtonElement = document.getElementById('exportJson');
+  const modalElement = document.getElementById('editorModal');
+  const EditorCloseModalElement = document.getElementById('closeModal');
+  const editorCancelButtonElement = document.getElementById('cancelEditor');
+  const editorTitleElement = document.getElementById('editorTitle');
+  const editorCategorySelectElement = document.getElementById('editorCategory');
+  const editorAddCategoryButtonElement = document.getElementById('addCategoryBtn');
+  const editorGroupSelectElement = document.getElementById('editorGroup');
+  const editorAddGroupButtonElement = document.getElementById('addGroupBtn');
+  const editorLabelInputElement = document.getElementById('editorLabel');
+  const editorDescriptionInputElement = document.getElementById('editorDescription');
+  const editorTemplateInputElement = document.getElementById('editorTemplate');
+  const editorVariablesFieldsetElement = document.getElementById('variablesFieldset');
+  const editorFormElement = document.getElementById('editorForm');
 
   // ——— 3. Application state ——————————————————
   let commands = {};                                 // loaded JSON data
@@ -43,7 +43,7 @@
   function applyTheme() {
     document.body.classList.toggle('dark', darkMode);
   }
-  darkToggle.addEventListener('click', () => {
+  darkmodeToggleElement.addEventListener('click', () => {
     darkMode = !darkMode;
     localStorage.setItem(LS.THEME, darkMode);
     applyTheme();
@@ -51,7 +51,7 @@
 
   // ——— 5. Template editor helpers ——————————
   function getTemplateText() {
-    return templateInput.textContent;
+    return editorTemplateInputElement.textContent;
   }
   function setTemplateText(str) {
     const esc = str
@@ -61,7 +61,7 @@
     const html = esc.replace(/\{[^}]+\}/g, tok =>
       `<span class="variable">${tok}</span>`
     );
-    templateInput.innerHTML = html;
+    editorTemplateInputElement.innerHTML = html;
   }
   function saveCaretPosition(context) {
     const sel = window.getSelection();
@@ -95,10 +95,10 @@
     sel.removeAllRanges();
     sel.addRange(range);
   }
-  templateInput.addEventListener('input', () => {
-    const pos = saveCaretPosition(templateInput);
+  editorTemplateInputElement.addEventListener('input', () => {
+    const pos = saveCaretPosition(editorTemplateInputElement);
     setTemplateText(getTemplateText());
-    restoreCaretPosition(templateInput, pos);
+    restoreCaretPosition(editorTemplateInputElement, pos);
   });
 
   // ——— 6. Cleanup empty groups/categories —————
@@ -111,38 +111,38 @@
 
   // ——— 7. Populate Category & Group selects ————
   function populateCategoryList() {
-    categorySelectDOM.innerHTML = '';
+    editorCategorySelectElement.innerHTML = '';
     Object.keys(commands).forEach(category => {
       const opt = document.createElement('option');
       opt.value = category;
       opt.textContent = capitalize(category);
-      categorySelectDOM.appendChild(opt);
+      editorCategorySelectElement.appendChild(opt);
     });
   }
   function populateGroupList() {
-    groupSelectDOM.innerHTML = '';
-    const cat = categorySelectDOM.value;
+    editorGroupSelectElement.innerHTML = '';
+    const cat = editorCategorySelectElement.value;
     if (!commands[cat]) return;
     commands[cat].Groups.forEach(g => {
       const opt = document.createElement('option');
       opt.value = g.id;
       opt.textContent = g.name;
-      groupSelectDOM.appendChild(opt);
+      editorGroupSelectElement.appendChild(opt);
     });
   }
 
   // ——— 8. “➕” Add Category/Group handlers —————
-  addCategoryBtn.addEventListener('click', () => {
+  editorAddCategoryButtonElement.addEventListener('click', () => {
     const name = prompt('Enter new category name:');
     if (!name) return;
     if (!commands[name]) commands[name] = { Groups: [] };
     //renderCommands();   // Not needed ?
     populateCategoryList();
-    categorySelectDOM.value = name;
-    groupSelectDOM.innerHTML = '';
+    editorCategorySelectElement.value = name;
+    editorGroupSelectElement.innerHTML = '';
   });
-  addGroupBtn.addEventListener('click', () => {
-    const cat = categorySelectDOM.value;
+  editorAddGroupButtonElement.addEventListener('click', () => {
+    const cat = editorCategorySelectElement.value;
     if (!cat) return alert('Please select a category first.');
     const name = prompt('Enter new group name:');
     if (!name) return;
@@ -152,7 +152,7 @@
       commands[cat].Groups.push({ id, name, commands: [] });
     }
     populateGroupList();
-    groupSelectDOM.value = id;
+    editorGroupSelectElement.value = id;
   });
 
   // ——— 9. Copy + flash effect ——————————————
@@ -216,7 +216,7 @@
     });
 
     // filter groups & update counts
-    const term = searchInput.value.trim().toLowerCase();
+    const term = searchInputElement.value.trim().toLowerCase();
     document.querySelectorAll('.command-group').forEach(grp => {
       //console.log("updateAll | forEach command-block - filter groups & update counts");
       const blocks = Array.from(grp.querySelectorAll('.command-block'));
@@ -414,32 +414,32 @@
   }
 
   // ——— 13. Modal: open/edit logic ——————————
-  openEditor.addEventListener('click', e => {
+  commandOpenEditorElement.addEventListener('click', e => {
     e.preventDefault();
     editingCmd = null;
     const defaultGrp = activeGroup || commands[activeTab]?.Groups[0]?.id || '';
     openEditModal(activeTab, defaultGrp, null);
   });
-  closeModal.addEventListener('click', () => modal.style.display = 'none');
-  cancelBtn.addEventListener('click', () => modal.style.display = 'none');
+  EditorCloseModalElement.addEventListener('click', () => modalElement.style.display = 'none');
+  editorCancelButtonElement.addEventListener('click', () => modalElement.style.display = 'none');
 
   function openEditModal(tabId, groupId, commandId = null) {
     editingCmd = { tabId, groupId, commandId };
-    titleEl.textContent = commandId ? 'Edit Command' : 'Add Command';
+    editorTitleElement.textContent = commandId ? 'Edit Command' : 'Add Command';
 
     // Category & Group selects
     populateCategoryList();
-    categorySelectDOM.value = tabId;
-    categorySelectDOM.onchange = populateGroupList;
+    editorCategorySelectElement.value = tabId;
+    editorCategorySelectElement.onchange = populateGroupList;
     populateGroupList();
-    groupSelectDOM.value = groupId || '';
+    editorGroupSelectElement.value = groupId || '';
 
     // Prefill fields
-    labelInput.value = commandId
+    editorLabelInputElement.value = commandId
       ? commands[tabId].Groups.find(g => g.id === groupId)
         .commands.find(c => c.id === commandId).label
       : '';
-    descInput.value = commandId
+    editorDescriptionInputElement.value = commandId
       ? commands[tabId].Groups.find(g => g.id === groupId)
         .commands.find(c => c.id === commandId).description
       : '';
@@ -451,8 +451,8 @@
     );
 
     // Variables area
-    varsField.innerHTML = '<legend>Variables +</legend>';
-    const legend = varsField.querySelector('legend');
+    editorVariablesFieldsetElement.innerHTML = '<legend>Variables +</legend>';
+    const legend = editorVariablesFieldsetElement.querySelector('legend');
     legend.style.cursor = 'pointer';
     legend.title = 'Add Variable';
     legend.onclick = () => addVariableRow();
@@ -463,10 +463,10 @@
         addVariableRow(k, opt.hint, opt.pattern || '', opt.default_value || '', opt.optional)
       );
     } else {
-      form.reset();
+      editorFormElement.reset();
     }
 
-    modal.style.display = 'block';
+    modalElement.style.display = 'block';
   }
 
   // ——— 14. Add variable row ——————————————————
@@ -484,7 +484,7 @@
       <button type="button" class="insert-btn">⇨</button>
       <button type="button" class="remove-var">🗑️</button>
     `;
-    varsField.appendChild(row);
+    editorVariablesFieldsetElement.appendChild(row);
 
     const nameFld = row.querySelector('input[placeholder="name"]');
     const optChk = row.querySelector('.var-optional');
@@ -497,11 +497,11 @@
       const variableName = nameFld.value.trim();
       if (!variableName) return;
       const placeholder = `{${variableName}${optChk.checked ? '?' : ''}}`;
-      if (document.activeElement === templateInput) {
-        const offset = saveCaretPosition(templateInput);
+      if (document.activeElement === editorTemplateInputElement) {
+        const offset = saveCaretPosition(editorTemplateInputElement);
         document.execCommand('insertText', false, placeholder);
         setTemplateText(getTemplateText());
-        restoreCaretPosition(templateInput, offset + placeholder.length);
+        restoreCaretPosition(editorTemplateInputElement, offset + placeholder.length);
       } else {
         const curr = getTemplateText();
         setTemplateText((curr + ' ' + placeholder).trim());
@@ -518,12 +518,12 @@
   }
 
   // ——— 15. Save (Add/Edit) command ——————————
-  form.addEventListener('submit', e => {
+  editorFormElement.addEventListener('submit', e => {
     e.preventDefault();
-    const cat = categorySelectDOM.value.trim();
+    const cat = editorCategorySelectElement.value.trim();
     if (!commands[cat]) commands[cat] = { Groups: [] };
 
-    let commandGroup = commands[cat].Groups.find(g => g.id === groupSelectDOM.value);
+    let commandGroup = commands[cat].Groups.find(g => g.id === editorGroupSelectElement.value);
     if (!commandGroup) {
       const name = prompt('Enter new group name:');
       const slug = name.replace(/\W+/g, '-').toLowerCase();
@@ -531,12 +531,12 @@
       commands[cat].Groups.push(commandGroup);
     }
 
-    const label = labelInput.value.trim();
-    const desc = descInput.value.trim();
+    const label = editorLabelInputElement.value.trim();
+    const desc = editorDescriptionInputElement.value.trim();
     const tpl = getTemplateText().trim();
 
     const vars = {};
-    varsField.querySelectorAll('.variable-row').forEach(r => {
+    editorVariablesFieldsetElement.querySelectorAll('.variable-row').forEach(r => {
       const name = r.querySelector('input[placeholder="name"]').value.trim();
       const optional = r.querySelector('.var-optional').checked;
       const hint = r.querySelector('input[placeholder="hint"]').value.trim();
@@ -564,12 +564,12 @@
 
     cleanupStructure();
     renderCommands();
-    modal.style.display = 'none';
+    modalElement.style.display = 'none';
     editingCmd = null;
   });
 
   // ——— 16. Export JSON ————————————————————
-  exportBtn.addEventListener('click', () => {
+  exportButtonElement.addEventListener('click', () => {
     const blob = new Blob([JSON.stringify(commands, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -580,7 +580,7 @@
   });
 
   // ——— 17. Live Search ————————————————————
-  searchInput.addEventListener('input', updateAll);
+  searchInputElement.addEventListener('input', updateAll);
 
   // ——— 18. Initial Fetch & Bootstrap ——————
   fetch('commands.json')
